@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Modules | Greenpower SL Approvals</title>
+    <!--
+  Greenpower SL Management (Private) Limited
+  Approvals Workflow, module launcher
+  =========================================================================
+  BACKEND-READY SCAFFOLD. Search for [API] to find every integration point.
+  This is the page a user lands on after sign in. Each tile is a navigation
+  target into module.html?module={id}, carrying its own counts.
+
+  Access control note: tiles are hidden or locked here purely as a user
+  convenience. Every module route and every API endpoint must independently
+  authorise the caller. Do not treat a hidden tile as a control.
+-->
+    <style>
+        :root {
+            /* Brand tokens, placeholder values pending gpsl-brand sign off */
+            --gp-green-900: #06301f;
+            --gp-green-800: #0a4a30;
+            --gp-green-700: #0b5d3b;
+            --gp-green-600: #127a4e;
+            --gp-green-100: #e4f2ea;
+            --gp-slate-900: #101820;
+            --gp-slate-700: #374151;
+            --gp-slate-500: #6b7280;
+            --gp-slate-400: #9aa3ad;
+            --gp-slate-300: #d3d9e0;
+            --gp-slate-200: #e5e9ed;
+            --gp-slate-100: #f4f6f8;
+            --gp-amber: #b45309;
+            --gp-amber-100: #fef4e6;
+            --gp-red: #b3261e;
+            --gp-red-100: #fdecea;
+            --gp-blue: #1d4ed8;
+            --gp-blue-100: #e8eefc;
+            --gp-violet: #5b21b6;
+            --gp-violet-100: #efe6fb;
+            --gp-teal: #0f6f7a;
+            --gp-teal-100: #e2f2f4;
+            --gp-white: #ffffff;
+            --radius: 6px;
+            --shadow-sm: 0 1px 2px rgba(16, 24, 32, .07);
+            --shadow-md: 0 4px 14px rgba(16, 24, 32, .10);
+            --font: "Inter", "Segoe UI", Arial, Helvetica, sans-serif;
+            --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+            --topbar: 58px;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: var(--font);
+            font-size: 14px;
+            color: var(--gp-slate-900);
+            background: var(--gp-slate-100);
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh
+        }
+
+        button,
+        input,
+        select {
+            font-family: inherit
+        }
+
+        /* ================= Top bar ================= */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--topbar);
+            z-index: 40;
+            background: var(--gp-green-900);
+            color: var(--gp-white);
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 0 20px
+        }
+
+        .tb-logo {
+            display: flex;
+            align-items: center;
+            gap: 11px
+        }
+
+        .tb-mark {
+            width: 30px;
+            height: 30px;
+            border-radius: 7px;
+            background: var(--gp-white);
+            display: grid;
+            place-items: center;
+            flex: 0 0 30px;
+            overflow: hidden;
+        }
+
+        .tb-mark img {
+            border-radius: 5px;
+            /* slightly less than the container's 7px */
+        }
+
+        .tb-mark svg {
+            width: 19px;
+            height: 19px
+        }
+
+        .tb-name {
+            line-height: 1.15
+        }
+
+        .tb-name strong {
+            display: block;
+            font-size: 13.5px;
+            letter-spacing: .2px
+        }
+
+        .tb-name span {
+            display: block;
+            font-size: 10px;
+            color: rgba(255, 255, 255, .62);
+            text-transform: uppercase;
+            letter-spacing: .7px
+        }
+
+        .tb-sep {
+            width: 1px;
+            height: 26px;
+            background: rgba(255, 255, 255, .16)
+        }
+
+        .tb-entity {
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .tb-entity label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, .6);
+            text-transform: uppercase;
+            letter-spacing: .6px
+        }
+
+        .tb-entity select {
+            background: rgba(255, 255, 255, .10);
+            border: 1px solid rgba(255, 255, 255, .20);
+            color: var(--gp-white);
+            border-radius: 5px;
+            padding: 6px 9px;
+            font-size: 12.5px;
+            max-width: 230px
+        }
+
+        .tb-entity select option {
+            color: var(--gp-slate-900)
+        }
+
+        .tb-spacer {
+            flex: 1
+        }
+
+        .tb-user {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .avatar {
+            width: 31px;
+            height: 31px;
+            border-radius: 50%;
+            background: var(--gp-green-600);
+            display: grid;
+            place-items: center;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: .4px
+        }
+
+        .tb-user-meta {
+            line-height: 1.2;
+            text-align: right
+        }
+
+        .tb-user-meta b {
+            display: block;
+            font-size: 12.5px;
+            font-weight: 600
+        }
+
+        .tb-user-meta span {
+            display: block;
+            font-size: 10.5px;
+            color: rgba(255, 255, 255, .62)
+        }
+
+        .tb-signout {
+            background: rgba(255, 255, 255, .10);
+            border: 1px solid rgba(255, 255, 255, .18);
+            color: var(--gp-white);
+            border-radius: 5px;
+            padding: 7px 11px;
+            font-size: 12px;
+            cursor: pointer
+        }
+
+        .tb-signout:hover {
+            background: rgba(255, 255, 255, .18)
+        }
+
+        /* ================= Layout ================= */
+        main {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: calc(var(--topbar) + 30px) 26px 70px
+        }
+
+        /* Greeting */
+        .hello {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 26px;
+            margin-bottom: 22px;
+            flex-wrap: wrap
+        }
+
+        .hello h1 {
+            margin: 0 0 6px;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -.3px
+        }
+
+        .hello p {
+            margin: 0;
+            font-size: 13.5px;
+            color: var(--gp-slate-500);
+            line-height: 1.6;
+            max-width: 680px
+        }
+
+        .hello .date {
+            font-size: 12.5px;
+            color: var(--gp-slate-500);
+            white-space: nowrap;
+            padding-top: 4px
+        }
+
+        /* Action banner */
+        .callout {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 17px;
+            border-radius: var(--radius);
+            margin-bottom: 24px;
+            border-left: 3px solid;
+            font-size: 13.5px;
+            line-height: 1.6
+        }
+
+        .callout.amber {
+            background: var(--gp-amber-100);
+            color: #7c3d06;
+            border-color: var(--gp-amber)
+        }
+
+        .callout.green {
+            background: var(--gp-green-100);
+            color: var(--gp-green-900);
+            border-color: var(--gp-green-600)
+        }
+
+        .callout b {
+            font-weight: 700
+        }
+
+        .callout .grow {
+            flex: 1
+        }
+
+        .callout a {
+            color: inherit;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+            border: 1px solid currentColor;
+            border-radius: 5px;
+            padding: 7px 13px;
+            font-size: 12.5px
+        }
+
+        .callout a:hover {
+            background: rgba(0, 0, 0, .05)
+        }
+
+        /* Summary strip */
+        .strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 30px
+        }
+
+        .stat {
+            background: var(--gp-white);
+            border: 1px solid var(--gp-slate-200);
+            border-radius: var(--radius);
+            padding: 15px 16px;
+            box-shadow: var(--shadow-sm)
+        }
+
+        .stat h6 {
+            margin: 0 0 7px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .7px;
+            color: var(--gp-slate-500);
+            font-weight: 700
+        }
+
+        .stat b {
+            display: block;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -.5px;
+            line-height: 1.1
+        }
+
+        .stat small {
+            display: block;
+            margin-top: 6px;
+            font-size: 11.5px;
+            color: var(--gp-slate-500)
+        }
+
+        .stat.warn b {
+            color: var(--gp-amber)
+        }
+
+        .stat.danger b {
+            color: var(--gp-red)
+        }
+
+        /* Toolbar */
+        .toolbar {
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 22px
+        }
+
+        .toolbar .f {
+            display: flex;
+            flex-direction: column;
+            gap: 5px
+        }
+
+        .toolbar label {
+            font-size: 10.5px;
+            text-transform: uppercase;
+            letter-spacing: .65px;
+            color: var(--gp-slate-500);
+            font-weight: 700
+        }
+
+        .toolbar input,
+        .toolbar select {
+            border: 1px solid var(--gp-slate-300);
+            border-radius: 5px;
+            padding: 9px 11px;
+            font-size: 13px;
+            background: var(--gp-white);
+            min-width: 180px
+        }
+
+        .toolbar input:focus,
+        .toolbar select:focus {
+            outline: none;
+            border-color: var(--gp-green-600);
+            box-shadow: 0 0 0 3px rgba(18, 122, 78, .13)
+        }
+
+        .toolbar .spacer {
+            flex: 1
+        }
+
+        .btn {
+            border: 0;
+            border-radius: var(--radius);
+            padding: 10px 15px;
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            white-space: nowrap
+        }
+
+        .btn-primary {
+            background: var(--gp-green-700);
+            color: var(--gp-white)
+        }
+
+        .btn-primary:hover {
+            background: var(--gp-green-800)
+        }
+
+        .btn-outline {
+            background: var(--gp-white);
+            color: var(--gp-slate-900);
+            border: 1px solid var(--gp-slate-300)
+        }
+
+        .btn-outline:hover {
+            background: var(--gp-slate-100)
+        }
+
+        .btn svg {
+            width: 15px;
+            height: 15px;
+            stroke: currentColor;
+            fill: none
+        }
+
+        .toggle {
+            display: inline-flex;
+            border: 1px solid var(--gp-slate-300);
+            border-radius: 5px;
+            overflow: hidden;
+            background: var(--gp-white)
+        }
+
+        .toggle button {
+            border: 0;
+            background: none;
+            padding: 9px 13px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--gp-slate-500);
+            cursor: pointer
+        }
+
+        .toggle button+button {
+            border-left: 1px solid var(--gp-slate-300)
+        }
+
+        .toggle button.on {
+            background: var(--gp-green-100);
+            color: var(--gp-green-800)
+        }
+
+        /* ================= Tile groups ================= */
+        .group {
+            margin-bottom: 34px
+        }
+
+        .group-head {
+            display: flex;
+            align-items: baseline;
+            gap: 11px;
+            margin-bottom: 14px;
+            padding-bottom: 9px;
+            border-bottom: 1px solid var(--gp-slate-200)
+        }
+
+        .group-head h2 {
+            margin: 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .9px;
+            color: var(--gp-green-700);
+            font-weight: 700
+        }
+
+        .group-head span {
+            font-size: 12.5px;
+            color: var(--gp-slate-500)
+        }
+
+        .tiles {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(316px, 1fr));
+            gap: 16px
+        }
+
+        .tile {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            text-align: left;
+            background: var(--gp-white);
+            border: 1px solid var(--gp-slate-200);
+            border-radius: 8px;
+            padding: 18px 18px 14px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow .16s, border-color .16s, transform .16s;
+        }
+
+        .tile:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--gp-green-600);
+            transform: translateY(-2px)
+        }
+
+        .tile:focus-visible {
+            outline: none;
+            border-color: var(--gp-green-600);
+            box-shadow: 0 0 0 3px rgba(18, 122, 78, .20)
+        }
+
+        .tile.action {
+            border-left: 3px solid var(--gp-amber)
+        }
+
+        .tile.locked {
+            cursor: not-allowed;
+            opacity: .66;
+            background: var(--gp-slate-100)
+        }
+
+        .tile.locked:hover {
+            box-shadow: var(--shadow-sm);
+            border-color: var(--gp-slate-200);
+            transform: none
+        }
+
+        .tile-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+            margin-bottom: 12px
+        }
+
+        .tile-ic {
+            width: 40px;
+            height: 40px;
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            flex: 0 0 40px
+        }
+
+        .tile-ic svg {
+            width: 21px;
+            height: 21px;
+            fill: none;
+            stroke-width: 1.85;
+            stroke-linecap: round;
+            stroke-linejoin: round
+        }
+
+        .ic-green {
+            background: var(--gp-green-100)
+        }
+
+        .ic-green svg {
+            stroke: var(--gp-green-700)
+        }
+
+        .ic-blue {
+            background: var(--gp-blue-100)
+        }
+
+        .ic-blue svg {
+            stroke: var(--gp-blue)
+        }
+
+        .ic-amber {
+            background: var(--gp-amber-100)
+        }
+
+        .ic-amber svg {
+            stroke: var(--gp-amber)
+        }
+
+        .ic-violet {
+            background: var(--gp-violet-100)
+        }
+
+        .ic-violet svg {
+            stroke: var(--gp-violet)
+        }
+
+        .ic-teal {
+            background: var(--gp-teal-100)
+        }
+
+        .ic-teal svg {
+            stroke: var(--gp-teal)
+        }
+
+        .ic-red {
+            background: var(--gp-red-100)
+        }
+
+        .ic-red svg {
+            stroke: var(--gp-red)
+        }
+
+        .ic-grey {
+            background: var(--gp-slate-200)
+        }
+
+        .ic-grey svg {
+            stroke: var(--gp-slate-500)
+        }
+
+        .tile-head {
+            flex: 1;
+            min-width: 0
+        }
+
+        .tile-head h3 {
+            margin: 0 0 4px;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: -.1px;
+            line-height: 1.3
+        }
+
+        .tile-head p {
+            margin: 0;
+            font-size: 12.5px;
+            color: var(--gp-slate-500);
+            line-height: 1.55
+        }
+
+        .badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            min-width: 24px;
+            height: 24px;
+            padding: 0 7px;
+            border-radius: 999px;
+            display: grid;
+            place-items: center;
+            font-size: 12px;
+            font-weight: 700
+        }
+
+        .badge.amber {
+            background: var(--gp-amber);
+            color: var(--gp-white)
+        }
+
+        .badge.grey {
+            background: var(--gp-slate-200);
+            color: var(--gp-slate-500)
+        }
+
+        .tile-stats {
+            display: flex;
+            gap: 0;
+            border-top: 1px solid var(--gp-slate-200);
+            margin-top: auto;
+            padding-top: 12px
+        }
+
+        .tile-stats div {
+            flex: 1;
+            min-width: 0
+        }
+
+        .tile-stats div+div {
+            border-left: 1px solid var(--gp-slate-200);
+            padding-left: 12px
+        }
+
+        .tile-stats b {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.2;
+            font-variant-numeric: tabular-nums
+        }
+
+        .tile-stats span {
+            display: block;
+            font-size: 10.5px;
+            color: var(--gp-slate-500);
+            text-transform: uppercase;
+            letter-spacing: .55px;
+            margin-top: 3px
+        }
+
+        .tile-stats .over b {
+            color: var(--gp-red)
+        }
+
+        .tile-stats .mine b {
+            color: var(--gp-amber)
+        }
+
+        .tile-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 12px;
+            padding-top: 11px;
+            border-top: 1px dashed var(--gp-slate-200);
+            font-size: 11.5px;
+            color: var(--gp-slate-500)
+        }
+
+        .tile-foot .go {
+            color: var(--gp-green-700);
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px
+        }
+
+        .tile.locked .tile-foot .go {
+            color: var(--gp-slate-500)
+        }
+
+        .tile-foot svg {
+            width: 13px;
+            height: 13px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-linejoin: round
+        }
+
+        .lockmsg {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 11.5px;
+            color: var(--gp-slate-500)
+        }
+
+        /* Empty state */
+        .noresults {
+            background: var(--gp-white);
+            border: 1px solid var(--gp-slate-200);
+            border-radius: var(--radius);
+            padding: 52px 20px;
+            text-align: center;
+            color: var(--gp-slate-500)
+        }
+
+        .noresults b {
+            display: block;
+            font-size: 15px;
+            color: var(--gp-slate-700);
+            margin-bottom: 6px
+        }
+
+        /* Footer */
+        .pagefoot {
+            margin-top: 44px;
+            padding-top: 18px;
+            border-top: 1px solid var(--gp-slate-200);
+            font-size: 11.5px;
+            color: var(--gp-slate-500);
+            line-height: 1.7;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap
+        }
+
+        .toasts {
+            position: fixed;
+            bottom: 22px;
+            right: 22px;
+            z-index: 90;
+            display: flex;
+            flex-direction: column;
+            gap: 9px
+        }
+
+        .toast {
+            background: var(--gp-slate-900);
+            color: var(--gp-white);
+            border-radius: var(--radius);
+            padding: 12px 15px;
+            font-size: 13px;
+            box-shadow: var(--shadow-md);
+            max-width: 370px;
+            animation: rise .2s ease
+        }
+
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(9px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        .sr {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            white-space: nowrap
+        }
+
+        [hidden] {
+            display: none !important
+        }
+
+        @media (max-width:1100px) {
+            .strip {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+
+        @media (max-width:760px) {
+
+            .tb-entity label,
+            .tb-user-meta {
+                display: none
+            }
+
+            .tiles {
+                grid-template-columns: 1fr
+            }
+
+            .strip {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= Top bar ================= -->
+    <header class="topbar">
+        <div class="tb-logo">
+            <div class="tb-mark" aria-hidden="true">
+                <img src="static/greenpower_sl_logo.png" alt="" style="width:100%;height:100%;object-fit:contain;">
+            </div>
+            <div class="tb-name"><strong>Greenpower SL</strong><span>Approvals</span></div>
+        </div>
+
+        <div class="tb-sep" aria-hidden="true"></div>
+
+        <div class="tb-entity">
+            <label for="entityScope">Entity</label>
+            <select id="entityScope" aria-label="Entity scope">
+                <option value="all">All entities in scope</option>
+            </select>
+        </div>
+
+        <div class="tb-spacer"></div>
+
+        <div class="tb-user">
+            <div class="tb-user-meta">
+                <b id="userName">&nbsp;</b>
+                <span id="userRole">&nbsp;</span>
+            </div>
+            <div class="avatar" id="userInitials" aria-hidden="true"></div>
+            <button class="tb-signout" id="signOutBtn">Sign out</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Greeting -->
+        <div class="hello">
+            <div>
+                <h1 id="greeting">&nbsp;</h1>
+                <p id="greetingSub">&nbsp;</p>
+            </div>
+            <div class="date" id="today">&nbsp;</div>
+        </div>
+
+        <!-- Action callout -->
+        <div class="callout amber" id="callout" hidden>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 20px">
+                <path d="M12 9v4" />
+                <path d="M12 17h.01" />
+                <path d="M10.3 3.9L2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" />
+            </svg>
+            <span class="grow" id="calloutText"></span>
+            <a href="/module?view=queue" id="calloutLink">Open my queue</a>
+        </div>
+
+        <!-- Summary strip -->
+        <section class="strip" id="strip" aria-label="Platform summary"></section>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="f">
+                <label for="tSearch">Find a module</label>
+                <input id="tSearch" type="search" placeholder="Capex, consent, E&amp;S, payment">
+            </div>
+            <div class="f">
+                <label for="tGroup">Area</label>
+                <select id="tGroup">
+                    <option value="">All areas</option>
+                </select>
+            </div>
+            <div class="f">
+                <label id="tFilterLabel">Show</label>
+                <div class="toggle" role="group" aria-labelledby="tFilterLabel">
+                    <button id="tAll" class="on">All modules</button>
+                    <button id="tMine">Needs my decision</button>
+                </div>
+            </div>
+            <div class="spacer"></div>
+            <a class="btn btn-outline" href="/module?view=mine">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                </svg>
+                Raised by me
+            </a>
+            <a class="btn btn-outline" href="/module?view=audit">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <path d="M14 2v6h6" />
+                    <path d="M8 13h8" />
+                    <path d="M8 17h5" />
+                </svg>
+                Audit log
+            </a>
+            <a class="btn btn-primary" href="/module?new=1">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3">
+                    <path d="M12 5v14" />
+                    <path d="M5 12h14" />
+                </svg>
+                Raise a request
+            </a>
+        </div>
+
+        <!-- Tile groups render here -->
+        <div id="groups"></div>
+
+        <div class="noresults" id="noresults" hidden>
+            <b>No modules match</b>
+            Clear the search or switch back to all modules.
+        </div>
+
+        <div class="pagefoot">
+            <span>Greenpower SL Management (Private) Limited, Colombo.
+                Operating to IFC Performance Standards. Confidential.</span>
+            <span id="footScope"></span>
+        </div>
+    </main>
+
+    <div class="toasts" id="toasts" aria-live="polite"></div>
+
+    <script>
+        'use strict';
+        /* =========================================================================
+           1. CONFIG
+           ========================================================================= */
+        const CONFIG = {
+            API_BASE: '/api',
+            DEMO: false,                 // Connected to live backend
+            LOGIN_URL: '/signin',
+            MODULE_URL: '#',            // target page for every tile
+            SLA_DAYS: 5
+        };
+
+        /* =========================================================================
+           2. MODULE CATALOGUE
+           The tile definitions. `id` must match the category identifiers used by
+           module.html, so that module.html?module={id} opens the right scope.
+           `permission` is checked against the permissions array returned by /me.
+        
+           In production this catalogue should come from the backend alongside the
+           counts, so that a new module can be enabled without a front end release. [API]
+           ========================================================================= */
+        const GROUPS = [
+            {
+                id: 'commercial', title: 'Commercial and financial',
+                note: 'Expenditure, procurement and offtake decisions'
+            },
+            {
+                id: 'operations', title: 'Operations and technical',
+                note: 'Site works, maintenance and asset changes'
+            },
+            {
+                id: 'compliance', title: 'Compliance and governance',
+                note: 'Consents, E&S, legal and board matters'
+            },
+            {
+                id: 'admin', title: 'Administration',
+                note: 'Platform access and delegated authority'
+            }
+        ];
+
+        const MODULES = [
+            /*
+            {
+                id: 'capex', group: 'commercial', icon: 'trend', tone: 'ic-green',
+                title: 'Capital expenditure',
+                desc: 'New capacity, extensions and asset additions above the opex threshold.',
+                permission: 'request.approve'
+            },
+
+            {
+                id: 'opex', group: 'commercial', icon: 'wallet', tone: 'ic-green',
+                title: 'Operating expenditure',
+                desc: 'Recurring and one off operating spend within the annual envelope.',
+                permission: 'request.approve'
+            },
+
+            {
+                id: 'procure', group: 'commercial', icon: 'gavel', tone: 'ic-blue',
+                title: 'Procurement and contract award',
+                desc: 'Bid evaluations, award recommendations and single source justifications.',
+                permission: 'request.approve'
+            },
+
+            {
+                id: 'ppa', group: 'commercial', icon: 'contract', tone: 'ic-blue',
+                title: 'PPA and offtake',
+                desc: 'Power purchase agreements, novations, tariff and curtailment variations.',
+                permission: 'request.approve'
+            },
+
+            {
+                id: 'payment', group: 'commercial', icon: 'card', tone: 'ic-teal',
+                title: 'Payment release',
+                desc: 'Release of approved payments against milestones, invoices and retentions.',
+                permission: 'payment.release'
+            },
+
+            {
+                id: 'om', group: 'operations', icon: 'wrench', tone: 'ic-amber',
+                title: 'O&M and site works',
+                desc: 'Fault rectification, inverter and module replacement, vegetation and access.',
+                permission: 'request.approve'
+            },
+
+            {
+                id: 'asset', group: 'operations', icon: 'panel', tone: 'ic-amber',
+                title: 'Asset and site changes',
+                desc: 'Site additions and retirements, capacity restatements and meter changes.',
+                permission: 'request.approve'
+            },
+
+            {
+                id: 'consent', group: 'compliance', icon: 'stamp', tone: 'ic-violet',
+                title: 'Provincial Council consents',
+                desc: 'Rooftop licences, access consents and variations across the seven provinces.',
+                permission: 'request.approve'
+            },
+
+            {
+                id: 'es', group: 'compliance', icon: 'shield', tone: 'ic-red',
+                title: 'E&S and HSE',
+                desc: 'Incidents, grievances and corrective actions under IFC Performance Standards.',
+                permission: 'request.approve'
+            },
+
+            {
+                id: 'legal', group: 'compliance', icon: 'scales', tone: 'ic-violet',
+                title: 'Legal and contractual',
+                desc: 'Counsel instructions, contract variations, disputes and settlements.',
+                permission: 'request.approve'
+            },
+*/
+            {
+                id: 'iso', group: 'compliance', icon: 'stamp', tone: 'ic-violet',
+                title: 'ISO document Approver',
+                desc: 'Approval for ISO related documents and policies.',
+                permission: 'request.approve'
+            },
+
+            /*
+                {
+                    id: 'board', group: 'compliance', icon: 'bank', tone: 'ic-violet',
+                    title: 'Board and shareholder matters',
+                    desc: 'Items above the managing director limit, referred to the board.',
+                    permission: 'board.view'
+                },
+    
+                {
+                    id: 'access', group: 'admin', icon: 'key', tone: 'ic-grey',
+                    title: 'Access and authority',
+                    desc: 'User access requests and changes to the delegation of authority matrix.',
+                    permission: 'admin.access'
+                }
+                    */
+
+        ];
+
+        /* Inline icon set, keyed by the `icon` field above. */
+        const ICONS = {
+            trend: '<path d="M3 17l6-6 4 4 7-7"/><path d="M14 8h6v6"/>',
+            wallet: '<path d="M3 7h15a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H5a2 2 0 0 1-2-2z"/><path d="M3 7V6a2 2 0 0 1 2-2h11"/><path d="M17 13h.01"/>',
+            gavel: '<path d="M14 3l7 7"/><path d="M9.5 7.5l7 7"/><path d="M12.5 4.5l-8 8 3 3 8-8z"/><path d="M4 21h10"/>',
+            contract: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/>',
+            card: '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/>',
+            wrench: '<path d="M14.5 5.5a4 4 0 1 0 4 6.5L21 14.5 17.5 18 15 15.5a4 4 0 0 1-6.5-4"/><path d="M9 15l-6 6"/>',
+            panel: '<rect x="3" y="4" width="18" height="11" rx="1"/><path d="M3 8h18"/><path d="M9 4v11"/><path d="M15 4v11"/><path d="M12 15v5"/><path d="M8 20h8"/>',
+            stamp: '<path d="M9 4a3 3 0 0 1 6 0c0 2-1.5 3-1.5 5h-3C10.5 7 9 6 9 4z"/><path d="M5 14h14v3H5z"/><path d="M4 20h16"/>',
+            shield: '<path d="M12 3l8 3v6c0 5-3.4 8.4-8 9-4.6-.6-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
+            scales: '<path d="M12 3v18"/><path d="M6 21h12"/><path d="M3 8h18"/><path d="M6 8l-3 6h6z"/><path d="M18 8l-3 6h6z"/>',
+            bank: '<path d="M3 10l9-6 9 6"/><path d="M5 10v9"/><path d="M19 10v9"/><path d="M9 19v-6h6v6"/><path d="M3 21h18"/>',
+            key: '<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9"/><path d="M17 3l3 3"/><path d="M14 6l3 3"/>'
+        };
+
+        /* =========================================================================
+           3. STATE
+           ========================================================================= */
+        const State = {
+            user: null,
+            summary: {},       // { moduleId: {open, mine, overdue, valueLKR, lastActivity} }
+            q: '',
+            group: '',
+            onlyMine: false,
+            entity: 'all'
+        };
+
+        /* =========================================================================
+           4. HELPERS
+           ========================================================================= */
+        const $ = id => document.getElementById(id);
+        const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g,
+            c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'];
+        const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        /* House style: "21 August 2026" */
+        function fmtDate(d) {
+            d = d instanceof Date ? d : new Date(d);
+            return d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+        }
+        function relative(iso) {
+            if (!iso) return 'No activity yet';
+            const days = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+            if (days <= 0) return 'Updated today';
+            if (days === 1) return 'Updated yesterday';
+            if (days < 7) return 'Updated ' + days + ' days ago';
+            return 'Updated ' + fmtDate(iso);
+        }
+        /* House style: currency code before the figure, comma thousands separator */
+        function fmtLKRm(n) {
+            if (!n) return 'LKR 0';
+            if (n >= 1000000) return 'LKR ' + (n / 1000000).toLocaleString('en-GB',
+                { maximumFractionDigits: 1 }) + 'm';
+            return 'LKR ' + Number(n).toLocaleString('en-GB');
+        }
+        function initials(name) {
+            return name.split(/\s+/).filter(Boolean).slice(0, 2).map(s => s[0].toUpperCase()).join('');
+        }
+        function toast(msg) {
+            const el = document.createElement('div');
+            el.className = 'toast';
+            el.textContent = msg;
+            $('toasts').appendChild(el);
+            setTimeout(() => el.remove(), 5000);
+        }
+        function greetingFor(h) {
+            if (h < 12) return 'Good morning';
+            if (h < 17) return 'Good afternoon';
+            return 'Good evening';
+        }
+        function can(permission) {
+            if (!State.user) return false;
+            if (!permission) return true;
+            return State.user.permissions.includes(permission);
+        }
+
+        /* =========================================================================
+           5. API LAYER  [API]
+           ========================================================================= */
+        const Api = {
+
+            /* GET {API_BASE}/auth/me */
+            async me() {
+                const u = await req('GET', '/auth/me');
+                return {
+                    id: 'usr_' + u.user_id,
+                    name: u.first_name || u.email.split('@')[0],
+                    email: u.email,
+                    role: u.job_title || 'Platform Member',
+                    title: u.job_title || 'Team Member',
+                    entities: ['GPSLM', 'SPV Western 01', 'SPV Western 02', 'SPV Central 01',
+                        'SPV Southern 01', 'SPV North Western 01', 'SPV Sabaragamuwa 01', 'SPV Uva 01'],
+                    provinces: ['Western', 'Central', 'Southern', 'North Western',
+                        'North Central', 'Sabaragamuwa', 'Uva'],
+                    limitLKR: 25000000,
+                    permissions: ['request.create', 'request.approve', 'request.reject',
+                        'request.return', 'board.view', 'payment.release', 'admin.access']
+                };
+            },
+
+            async summary(entity) {
+                return DEMO_SUMMARY(entity);
+            },
+
+            /* POST {API_BASE}/auth/logout */
+            async signOut() {
+                try { await req('POST', '/auth/logout'); } catch (e) { }
+                window.location.assign(CONFIG.LOGIN_URL);
+            }
+        };
+
+        async function req(method, path, body) {
+            const res = await fetch(CONFIG.API_BASE + path, {
+                method,
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                credentials: 'include',
+                body: body ? JSON.stringify(body) : undefined
+            });
+            if (res.status === 401) { window.location.assign(CONFIG.LOGIN_URL); return; }
+            let payload = null;
+            try { payload = await res.json(); } catch (e) { }
+            if (!res.ok) {
+                throw apiError(res.status, (payload && payload.code) || 'REQUEST_FAILED',
+                    (payload && payload.message) || 'The service is unavailable. Try again shortly.');
+            }
+            return payload;
+        }
+        function apiError(status, code, message) {
+            const e = new Error(message); e.status = status; e.code = code; return e;
+        }
+        const wait = ms => new Promise(r => setTimeout(r, ms));
+
+        /* =========================================================================
+           6. DEMO FIXTURE
+           Delete this block once Api.summary is pointed at the live service.
+           ========================================================================= */
+        function DEMO_SUMMARY(entity) {
+            const iso = d => new Date(Date.now() - d * 86400000).toISOString();
+            const base = {
+                capex: { open: 4, mine: 2, overdue: 2, valueLKR: 814400000, lastActivity: iso(0) },
+                opex: { open: 6, mine: 1, overdue: 0, valueLKR: 12300000, lastActivity: iso(1) },
+                procure: { open: 3, mine: 0, overdue: 1, valueLKR: 282000000, lastActivity: iso(2) },
+                ppa: { open: 2, mine: 0, overdue: 1, valueLKR: 0, lastActivity: iso(4) },
+                payment: { open: 9, mine: 0, overdue: 3, valueLKR: 46800000, lastActivity: iso(0) },
+                om: { open: 11, mine: 3, overdue: 2, valueLKR: 24200000, lastActivity: iso(0) },
+                asset: { open: 2, mine: 0, overdue: 0, valueLKR: 0, lastActivity: iso(6) },
+                consent: { open: 7, mine: 1, overdue: 2, valueLKR: 0, lastActivity: iso(1) },
+                es: { open: 5, mine: 1, overdue: 1, valueLKR: 6900000, lastActivity: iso(0) },
+                legal: { open: 3, mine: 0, overdue: 0, valueLKR: 4150000, lastActivity: iso(3) },
+                board: { open: 2, mine: 0, overdue: 1, valueLKR: 996000000, lastActivity: iso(2) },
+                access: { open: 6, mine: 0, overdue: 1, valueLKR: 0, lastActivity: iso(1) }
+            };
+            /* Crude scaling so the entity switcher visibly does something in the demo. */
+            const modules = {};
+            const factor = entity && entity !== 'all' ? 0.35 : 1;
+            Object.keys(base).forEach(k => {
+                const m = base[k];
+                modules[k] = {
+                    open: Math.round(m.open * factor),
+                    mine: Math.round(m.mine * factor),
+                    overdue: Math.round(m.overdue * factor),
+                    valueLKR: Math.round(m.valueLKR * factor),
+                    lastActivity: m.lastActivity
+                };
+            });
+            const sum = key => Object.values(modules).reduce((s, m) => s + m[key], 0);
+            return {
+                modules, totals: {
+                    open: sum('open'), mine: sum('mine'),
+                    overdue: sum('overdue'), valueLKR: sum('valueLKR')
+                }
+            };
+        }
+
+        /* =========================================================================
+           7. RENDER
+           ========================================================================= */
+        function renderStrip(totals) {
+            $('strip').innerHTML = [
+                {
+                    h: 'Awaiting my decision', v: totals.mine,
+                    s: totals.mine ? 'Across ' + visibleModules().filter(m => stat(m.id).mine).length + ' modules'
+                        : 'Your queue is clear',
+                    cls: totals.mine ? 'warn' : ''
+                },
+                { h: 'Open requests', v: totals.open, s: 'All modules in your scope', cls: '' },
+                {
+                    h: 'Past service level', v: totals.overdue,
+                    s: 'Older than ' + CONFIG.SLA_DAYS + ' days', cls: totals.overdue ? 'danger' : ''
+                },
+                { h: 'Value in flight', v: fmtLKRm(totals.valueLKR), s: 'LKR equivalent, open requests', cls: '' }
+            ].map(k => '<article class="stat ' + k.cls + '"><h6>' + esc(k.h) + '</h6><b>' +
+                esc(k.v) + '</b><small>' + esc(k.s) + '</small></article>').join('');
+        }
+
+        const stat = id => State.summary[id] ||
+            { open: 0, mine: 0, overdue: 0, valueLKR: 0, lastActivity: null };
+
+        function visibleModules() {
+            const q = State.q.toLowerCase();
+            return MODULES.filter(m => {
+                if (State.group && m.group !== State.group) return false;
+                if (State.onlyMine && !stat(m.id).mine) return false;
+                if (q) {
+                    const hay = (m.title + ' ' + m.desc + ' ' + m.id).toLowerCase();
+                    if (!hay.includes(q)) return false;
+                }
+                return true;
+            });
+        }
+
+        function tileHtml(m) {
+            const s = stat(m.id);
+            const allowed = can(m.permission);
+            const href = CONFIG.MODULE_URL + '?module=' + encodeURIComponent(m.id) +
+                (s.mine ? '&view=queue' : '&view=all');
+            const cls = 'tile' + (allowed && s.mine ? ' action' : '') + (allowed ? '' : ' locked');
+            const badge = s.mine
+                ? '<span class="badge amber" title="Awaiting your decision">' + s.mine + '</span>'
+                : (s.open ? '<span class="badge grey" title="Open requests">' + s.open + '</span>' : '');
+
+            const body =
+                '<div class="tile-top">' +
+                '<div class="tile-ic ' + m.tone + '" aria-hidden="true"><svg viewBox="0 0 24 24">' +
+                ICONS[m.icon] + '</svg></div>' +
+                '<div class="tile-head"><h3>' + esc(m.title) + '</h3><p>' + esc(m.desc) + '</p></div>' +
+                '</div>' +
+                '<div class="tile-stats">' +
+                '<div><b>' + s.open + '</b><span>Open</span></div>' +
+                /* Colour the figure only when it is non zero, so a row of zeros does not
+                   read as a row of warnings. */
+                '<div' + (s.mine ? ' class="mine"' : '') + '><b>' + s.mine + '</b><span>Awaiting you</span></div>' +
+                '<div' + (s.overdue ? ' class="over"' : '') + '><b>' + s.overdue + '</b><span>Overdue</span></div>' +
+                '<div><b style="font-size:13.5px;padding-top:2px">' + esc(fmtLKRm(s.valueLKR)) +
+                '</b><span>In flight</span></div>' +
+                '</div>' +
+                '<div class="tile-foot">' +
+                (allowed
+                    ? '<span>' + esc(relative(s.lastActivity)) + '</span>' +
+                    '<span class="go">Open module <svg viewBox="0 0 24 24"><path d="M5 12h14"/>' +
+                    '<path d="M13 6l6 6-6 6"/></svg></span>'
+                    : '<span class="lockmsg"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" ' +
+                    'stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" ' +
+                    'width="18" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>' +
+                    'Not in your role</span><span class="go">Request access</span>') +
+                '</div>';
+
+            if (!allowed) {
+                /* Locked tiles are not links, but they are still operable: activating one
+                   explains the restriction. They are therefore not marked aria-disabled,
+                   which would contradict the visible "Request access" affordance.
+                   The route and the API must refuse the caller independently; withholding
+                   the link here is a convenience, not a control. [API] */
+                return '<div class="' + cls + '" role="button" tabindex="0" data-locked="' +
+                    esc(m.title) + '" aria-label="' + esc(m.title) +
+                    ', not in your role. Activate to request access.">' + badge + body + '</div>';
+            }
+            return '<a class="' + cls + '" href="' + esc(href) + '" data-module="' + esc(m.id) + '">' +
+                badge + body + '</a>';
+        }
+
+        function renderGroups() {
+            const mods = visibleModules();
+            const groups = GROUPS.filter(g => mods.some(m => m.group === g.id));
+
+            $('groups').innerHTML = groups.map(g => {
+                const items = mods.filter(m => m.group === g.id);
+                const mine = items.reduce((s, m) => s + stat(m.id).mine, 0);
+                return '<section class="group">' +
+                    '<div class="group-head"><h2>' + esc(g.title) + '</h2><span>' + esc(g.note) +
+                    (mine ? '. ' + mine + ' awaiting your decision' : '') + '</span></div>' +
+                    '<div class="tiles">' + items.map(tileHtml).join('') + '</div>' +
+                    '</section>';
+            }).join('');
+
+            $('noresults').hidden = mods.length > 0;
+        }
+
+        function render() {
+            renderStrip(State.totals);
+            renderGroups();
+        }
+
+        /* =========================================================================
+           8. WIRING
+           ========================================================================= */
+        let searchTimer = null;
+        $('tSearch').addEventListener('input', () => {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => { State.q = $('tSearch').value.trim(); renderGroups(); }, 180);
+        });
+        $('tGroup').addEventListener('change', () => { State.group = $('tGroup').value; renderGroups(); });
+        $('tAll').addEventListener('click', () => {
+            State.onlyMine = false;
+            $('tAll').classList.add('on'); $('tMine').classList.remove('on');
+            renderGroups();
+        });
+        $('tMine').addEventListener('click', () => {
+            State.onlyMine = true;
+            $('tMine').classList.add('on'); $('tAll').classList.remove('on');
+            renderGroups();
+        });
+
+        $('entityScope').addEventListener('change', async () => {
+            State.entity = $('entityScope').value;
+            const res = await Api.summary(State.entity);
+            State.summary = res.modules;
+            State.totals = res.totals;
+            $('footScope').textContent = 'Scope: ' +
+                (State.entity === 'all' ? State.user.entities.length + ' entities, ' +
+                    State.user.provinces.length + ' provinces' : State.entity);
+            render();
+        });
+
+        /* Locked tiles: explain rather than navigate. */
+        $('groups').addEventListener('click', ev => {
+            const locked = ev.target.closest('[data-locked]');
+            if (!locked) return;
+            toast('“' + locked.dataset.locked + '” is not part of your role. ' +
+                'Ask a platform administrator to extend your access.');
+        });
+        $('groups').addEventListener('keydown', ev => {
+            if (ev.key !== 'Enter' && ev.key !== ' ') return;
+            const locked = ev.target.closest('[data-locked]');
+            if (!locked) return;
+            ev.preventDefault();
+            toast('“' + locked.dataset.locked + '” is not part of your role. ' +
+                'Ask a platform administrator to extend your access.');
+        });
+
+        $('signOutBtn').addEventListener('click', () => Api.signOut());
+
+        /* =========================================================================
+           9. BOOT
+           ========================================================================= */
+        (async function boot() {
+            try {
+                State.user = await Api.me();
+            } catch (e) {
+                window.location.assign(CONFIG.LOGIN_URL);
+                return;
+            }
+
+            const u = State.user;
+            $('userName').textContent = u.name;
+            $('userRole').textContent = u.title || u.role;
+            $('userInitials').textContent = initials(u.name);
+
+            const now = new Date();
+            $('greeting').textContent = greetingFor(now.getHours()) + ', ' + u.name.split(' ')[0];
+            $('today').textContent = DAYS[now.getDay()] + ', ' + fmtDate(now);
+            $('greetingSub').textContent =
+                'Select a module to review its queue. Your delegated authority is ' +
+                fmtLKRm(u.limitLKR).replace('m', ' million') + ' per approval; anything above that is ' +
+                'referred to the managing director or the board.';
+
+            $('entityScope').insertAdjacentHTML('beforeend',
+                u.entities.map(e => '<option value="' + esc(e) + '">' + esc(e) + '</option>').join(''));
+            $('tGroup').insertAdjacentHTML('beforeend',
+                GROUPS.map(g => '<option value="' + esc(g.id) + '">' + esc(g.title) + '</option>').join(''));
+            $('footScope').textContent = 'Scope: ' + u.entities.length + ' entities, ' +
+                u.provinces.length + ' provinces';
+
+            const res = await Api.summary('all');
+            State.summary = res.modules;
+            State.totals = res.totals;
+
+            if (res.totals.mine) {
+                $('calloutText').innerHTML = '<b>' + res.totals.mine + ' request' +
+                    (res.totals.mine === 1 ? '' : 's') + ' awaiting your decision.</b> ' +
+                    (res.totals.overdue ? res.totals.overdue + ' request' +
+                        (res.totals.overdue === 1 ? ' is' : 's are') + ' past the ' + CONFIG.SLA_DAYS +
+                        ' day service level across all modules.' : 'All within the service level.');
+                $('callout').hidden = false;
+            }
+
+            render();
+        })();
+    </script>
+</body>
+
+</html>

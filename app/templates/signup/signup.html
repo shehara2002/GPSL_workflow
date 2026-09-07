@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Request access | Greenpower SL Approvals</title>
+<!--
+  Greenpower SL Management (Private) Limited
+  Approvals Workflow, access request page
+  =========================================================================
+  BACKEND-READY SCAFFOLD. Search for [API] to find every integration point.
+  Access is request based, not self service: submitting this form creates a
+  pending request that a platform administrator must approve before the
+  account can sign in. Do not change that to instant activation without
+  sign off, given the delegated authority limits the module enforces.
+-->
+<style>
+:root{
+  --gp-green-900:#06301f; --gp-green-800:#0a4a30; --gp-green-700:#0b5d3b;
+  --gp-green-600:#127a4e; --gp-green-100:#e4f2ea;
+  --gp-slate-900:#101820; --gp-slate-700:#374151; --gp-slate-500:#6b7280;
+  --gp-slate-300:#d3d9e0; --gp-slate-100:#f4f6f8;
+  --gp-amber:#b45309; --gp-red:#b3261e; --gp-white:#ffffff;
+  --radius:6px; --font:"Inter","Segoe UI",Arial,Helvetica,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--font);color:var(--gp-slate-900);background:var(--gp-slate-100);
+  -webkit-font-smoothing:antialiased;min-height:100vh;display:flex}
+.shell{display:flex;width:100%;min-height:100vh}
+.brand{
+  flex:0 0 34%;
+  background:
+    radial-gradient(900px 500px at 10% 8%, rgba(18,122,78,.5), transparent 62%),
+    linear-gradient(165deg,var(--gp-green-900) 0%,var(--gp-green-800) 58%,var(--gp-green-700) 100%);
+  color:var(--gp-white);padding:52px 44px 38px;display:flex;flex-direction:column;
+  gap:52px;position:relative;overflow:hidden;
+}
+.brand-foot{margin-top:auto}
+.brand::after{content:"";position:absolute;left:-120px;top:-120px;width:380px;height:380px;
+  border-radius:50%;border:1px solid rgba(255,255,255,.09)}
+.logo{display:flex;align-items:center;gap:13px;position:relative;z-index:1}
+.logo-mark{width:40px;height:40px;border-radius:9px;background:var(--gp-white);
+  display:grid;place-items:center;flex:0 0 40px}
+.logo-mark svg{width:25px;height:25px}
+.logo-text strong{display:block;font-size:15.5px;letter-spacing:.2px}
+.logo-text span{display:block;font-size:11px;color:rgba(255,255,255,.72);
+  letter-spacing:.6px;text-transform:uppercase}
+.brand-copy{position:relative;z-index:1}
+.brand-copy h1{font-size:25px;line-height:1.3;margin:0 0 16px;font-weight:600;letter-spacing:-.2px}
+.steps{list-style:none;margin:0;padding:0;position:relative;z-index:1}
+.steps li{display:flex;gap:13px;padding:0 0 22px;position:relative}
+.steps li:not(:last-child)::before{content:"";position:absolute;left:12px;top:26px;bottom:2px;
+  width:1px;background:rgba(255,255,255,.18)}
+.steps .n{flex:0 0 25px;height:25px;border-radius:50%;background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.28);display:grid;place-items:center;
+  font-size:11.5px;font-weight:600}
+.steps b{display:block;font-size:13.5px;margin-bottom:3px;font-weight:600}
+.steps p{margin:0;font-size:12.5px;line-height:1.6;color:rgba(255,255,255,.72)}
+.brand-foot{position:relative;z-index:1;font-size:11px;color:rgba(255,255,255,.55);line-height:1.6}
+
+.pane{flex:1 1 66%;display:flex;align-items:flex-start;justify-content:center;
+  padding:52px 32px 64px;background:var(--gp-white);overflow-y:auto}
+.card{width:100%;max-width:640px}
+.card h2{font-size:24px;margin:0 0 6px;font-weight:600;letter-spacing:-.2px}
+.card .sub{font-size:13.5px;color:var(--gp-slate-500);margin:0 0 26px;line-height:1.65}
+fieldset{border:0;padding:0;margin:0 0 8px}
+legend{font-size:11.5px;font-weight:700;color:var(--gp-green-700);text-transform:uppercase;
+  letter-spacing:.85px;padding:0;margin:0 0 16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}
+.field{margin-bottom:18px}
+.field.full{grid-column:1 / -1}
+label{display:block;font-size:12.5px;font-weight:600;color:var(--gp-slate-700);margin:0 0 6px}
+.hint{font-size:11.5px;color:var(--gp-slate-500);font-weight:400;margin-top:5px;line-height:1.55}
+input[type=text],input[type=email],input[type=tel],input[type=password],select,textarea{
+  width:100%;padding:11px 12px;font-family:var(--font);font-size:14px;
+  border:1px solid var(--gp-slate-300);border-radius:var(--radius);background:var(--gp-white);
+  color:var(--gp-slate-900);transition:border-color .15s,box-shadow .15s}
+textarea{min-height:82px;resize:vertical;line-height:1.55}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gp-green-600);
+  box-shadow:0 0 0 3px rgba(18,122,78,.14)}
+[aria-invalid=true]{border-color:var(--gp-red);box-shadow:0 0 0 3px rgba(179,38,30,.10)}
+.err{display:none;font-size:12px;color:var(--gp-red);margin-top:6px}
+.err.show{display:block}
+.pw-wrap{position:relative}
+.pw-toggle{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;
+  cursor:pointer;font-family:var(--font);font-size:12px;font-weight:600;color:var(--gp-green-700);
+  padding:6px 8px;border-radius:4px}
+.pw-toggle:hover{background:var(--gp-green-100)}
+.meter{display:flex;gap:4px;margin-top:8px}
+.meter i{flex:1;height:4px;border-radius:2px;background:var(--gp-slate-300);transition:background .2s}
+.meter.s1 i:nth-child(1){background:var(--gp-red)}
+.meter.s2 i:nth-child(-n+2){background:var(--gp-amber)}
+.meter.s3 i:nth-child(-n+3){background:#0d8a57}
+.meter.s4 i{background:var(--gp-green-700)}
+.meter-label{font-size:11.5px;color:var(--gp-slate-500);margin-top:6px}
+.rules{list-style:none;margin:9px 0 0;padding:0;font-size:11.5px;color:var(--gp-slate-500);
+  display:grid;grid-template-columns:1fr 1fr;gap:4px 14px}
+.rules li{display:flex;align-items:center;gap:6px}
+.rules li::before{content:"○";font-size:10px;color:var(--gp-slate-300)}
+.rules li.ok{color:var(--gp-green-700)}
+.rules li.ok::before{content:"●";color:var(--gp-green-600)}
+.checks{display:grid;gap:9px;margin:2px 0 4px}
+.check{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:var(--gp-slate-700);
+  line-height:1.55;cursor:pointer}
+.check input{width:15px;height:15px;margin-top:1px;accent-color:var(--gp-green-700);flex:0 0 15px}
+.chipset{display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;width:0;height:0}
+.chip span{display:inline-block;padding:7px 13px;border:1px solid var(--gp-slate-300);
+  border-radius:999px;font-size:12.5px;cursor:pointer;transition:all .15s;background:var(--gp-white)}
+.chip input:checked + span{background:var(--gp-green-100);border-color:var(--gp-green-600);
+  color:var(--gp-green-900);font-weight:600}
+.chip input:focus-visible + span{box-shadow:0 0 0 3px rgba(18,122,78,.18)}
+hr.sep{border:0;border-top:1px solid var(--gp-slate-300);margin:8px 0 26px}
+button.primary{width:100%;padding:12px 16px;border:0;border-radius:var(--radius);
+  background:var(--gp-green-700);color:var(--gp-white);font-family:var(--font);font-size:14.5px;
+  font-weight:600;cursor:pointer;transition:background .15s;display:flex;align-items:center;
+  justify-content:center;gap:9px}
+button.primary:hover:not(:disabled){background:var(--gp-green-800)}
+button.primary:disabled{opacity:.62;cursor:not-allowed}
+.spinner{width:15px;height:15px;border:2px solid rgba(255,255,255,.4);border-top-color:var(--gp-white);
+  border-radius:50%;animation:spin .7s linear infinite;display:none}
+button.primary.busy .spinner{display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.banner{display:none;padding:11px 13px;border-radius:var(--radius);font-size:13px;line-height:1.55;
+  margin-bottom:22px;border-left:3px solid}
+.banner.show{display:block}
+.banner.error{background:#fdecea;color:#7f1d1a;border-color:var(--gp-red)}
+.banner.info{background:var(--gp-green-100);color:var(--gp-green-900);border-color:var(--gp-green-600)}
+.banner.warn{background:#fef4e6;color:#7c3d06;border-color:var(--gp-amber)}
+.foot{margin-top:22px;font-size:13px;color:var(--gp-slate-500);text-align:center}
+a.link{color:var(--gp-green-700);font-weight:500;text-decoration:none}
+a.link:hover{text-decoration:underline}
+.legal{margin-top:26px;font-size:11px;color:var(--gp-slate-500);line-height:1.65}
+.done{text-align:center;padding:26px 0}
+.done .tick{width:56px;height:56px;border-radius:50%;background:var(--gp-green-100);
+  display:grid;place-items:center;margin:0 auto 20px}
+.done h2{margin-bottom:10px}
+.ref{display:inline-block;margin:16px 0 4px;padding:8px 14px;background:var(--gp-slate-100);
+  border:1px solid var(--gp-slate-300);border-radius:var(--radius);font-size:14px;font-weight:600;
+  letter-spacing:.6px}
+.summary{text-align:left;margin:24px 0 0;border:1px solid var(--gp-slate-300);border-radius:var(--radius);
+  overflow:hidden;font-size:13px}
+.summary div{display:flex;padding:9px 13px;border-bottom:1px solid var(--gp-slate-300)}
+.summary div:last-child{border-bottom:0}
+.summary dt{flex:0 0 42%;color:var(--gp-slate-500);margin:0}
+.summary dd{margin:0;font-weight:500}
+[hidden]{display:none !important}
+@media (max-width:1000px){.brand{display:none}.pane{flex:1 1 100%}}
+@media (max-width:620px){.grid{grid-template-columns:1fr}.rules{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <aside class="brand">
+    <div class="logo">
+      <div class="logo-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0b5d3b" stroke-width="1.9"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v3"/><path d="M4.6 6.6l2.1 2.1"/><path d="M19.4 6.6l-2.1 2.1"/>
+          <circle cx="12" cy="12.5" r="3.2"/><path d="M3 20h18"/>
+          <path d="M6.5 20l2-4.2"/><path d="M17.5 20l-2-4.2"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <strong>Greenpower SL</strong>
+        <span>Approvals Workflow</span>
+      </div>
+    </div>
+
+    <div class="brand-copy">
+      <h1>Request access</h1>
+      <ol class="steps">
+        <li><div class="n">1</div><div>
+          <b>Submit your details</b>
+          <p>Tell us your entity, province coverage and the role you need.</p>
+        </div></li>
+        <li><div class="n">2</div><div>
+          <b>Verify your email</b>
+          <p>A verification link is sent to your work address.</p>
+        </div></li>
+        <li><div class="n">3</div><div>
+          <b>Administrator approval</b>
+          <p>A platform administrator confirms your delegated authority limit
+             before the account is activated. Usually within one working day.</p>
+        </div></li>
+      </ol>
+    </div>
+
+    <div class="brand-foot">
+      Greenpower SL Management (Private) Limited, Colombo.<br>
+      Access is granted on a least privilege basis. Confidential.
+    </div>
+  </aside>
+
+  <main class="pane">
+
+    <!-- ============ Form ============ -->
+    <section class="card" id="stepForm">
+      <h2>Request platform access</h2>
+      <p class="sub">Complete all fields. Requests are reviewed against your entity's
+         delegation of authority matrix, so the role and limit you select must match
+         your written mandate.</p>
+
+      <div class="banner error" id="formBanner" role="alert"></div>
+
+      <form id="signupForm" novalidate autocomplete="on">
+
+        <fieldset>
+          <legend>Your details</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="firstName">First name</label>
+              <input id="firstName" type="text" autocomplete="given-name" required>
+              <div class="err" id="firstNameErr"></div>
+            </div>
+            <div class="field">
+              <label for="lastName">Last name</label>
+              <input id="lastName" type="text" autocomplete="family-name" required>
+              <div class="err" id="lastNameErr"></div>
+            </div>
+            <div class="field">
+              <label for="email">Work email address</label>
+              <input id="email" type="email" inputmode="email" autocomplete="username"
+                     placeholder="name@greenpower-sl.com" required>
+              <div class="err" id="emailErr"></div>
+            </div>
+            <div class="field">
+              <label for="phone">Mobile number</label>
+              <input id="phone" type="tel" autocomplete="tel" placeholder="+94 77 000 0000" required>
+              <div class="hint">Used for two step verification.</div>
+              <div class="err" id="phoneErr"></div>
+            </div>
+            <div class="field">
+              <label for="jobTitle">Job title</label>
+              <input id="jobTitle" type="text" autocomplete="organization-title" required>
+              <div class="err" id="jobTitleErr"></div>
+            </div>
+            <div class="field">
+              <label for="lineManager">Line manager email</label>
+              <input id="lineManager" type="email" inputmode="email" required>
+              <div class="hint">Your request is copied to this address.</div>
+              <div class="err" id="lineManagerErr"></div>
+            </div>
+          </div>
+        </fieldset>
+
+        <hr class="sep">
+
+        <fieldset>
+          <legend>Entity and scope</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="entity">Primary entity</label>
+              <select id="entity" required>
+                <option value="">Select an entity</option>
+                <option>Greenpower SL (holding company, Paris)</option>
+                <option>Greenpower SL Management (Private) Limited</option>
+                <option>SPV, Western Province</option>
+                <option>SPV, Central Province</option>
+                <option>SPV, Southern Province</option>
+                <option>SPV, North Western Province</option>
+                <option>SPV, Sabaragamuwa Province</option>
+                <option>SPV, Uva Province</option>
+                <option>SPV, North Central Province</option>
+                <option>External adviser or contractor</option>
+              </select>
+              <div class="err" id="entityErr"></div>
+            </div>
+            <div class="field">
+              <label for="role">Role requested</label>
+              <select id="role" required>
+                <option value="">Select a role</option>
+                <option value="originator">Originator, raises requests only</option>
+                <option value="reviewer">Reviewer, technical or E&amp;S review</option>
+                <option value="approver">Approver, delegated authority holder</option>
+                <option value="finance">Finance, payment release</option>
+                <option value="observer">Observer, read only</option>
+                <option value="admin">Platform administrator</option>
+              </select>
+              <div class="err" id="roleErr"></div>
+            </div>
+
+            <div class="field full" id="limitField" hidden>
+              <label for="limit">Delegated authority limit</label>
+              <select id="limit">
+                <option value="">Select a limit</option>
+                <option value="2500000">LKR 2,500,000</option>
+                <option value="10000000">LKR 10,000,000</option>
+                <option value="25000000">LKR 25,000,000</option>
+                <option value="75000000">LKR 75,000,000</option>
+                <option value="board">Above LKR 75,000,000, board referral</option>
+              </select>
+              <div class="hint">Must match the limit recorded in your entity's delegation of
+                 authority matrix. Requests above your recorded limit will be rejected on review.</div>
+              <div class="err" id="limitErr"></div>
+            </div>
+
+            <div class="field full">
+              <label>Provinces you cover</label>
+              <div class="chipset" id="provinceSet">
+                <label class="chip"><input type="checkbox" name="province" value="Western"><span>Western</span></label>
+                <label class="chip"><input type="checkbox" name="province" value="Central"><span>Central</span></label>
+                <label class="chip"><input type="checkbox" name="province" value="Southern"><span>Southern</span></label>
+                <label class="chip"><input type="checkbox" name="province" value="North Western"><span>North Western</span></label>
+                <label class="chip"><input type="checkbox" name="province" value="North Central"><span>North Central</span></label>
+                <label class="chip"><input type="checkbox" name="province" value="Sabaragamuwa"><span>Sabaragamuwa</span></label>
+                <label class="chip"><input type="checkbox" name="province" value="Uva"><span>Uva</span></label>
+                <label class="chip"><input type="checkbox" name="province" value="All"><span>All provinces</span></label>
+              </div>
+              <div class="err" id="provinceErr"></div>
+            </div>
+
+            <div class="field full">
+              <label for="reason">Reason for access</label>
+              <textarea id="reason" maxlength="600"
+                placeholder="Briefly describe the approvals you will raise, review or approve."
+                required></textarea>
+              <div class="hint"><span id="reasonCount">0</span> of 600 characters.</div>
+              <div class="err" id="reasonErr"></div>
+            </div>
+          </div>
+        </fieldset>
+
+        <hr class="sep">
+
+        <fieldset>
+          <legend>Set a password</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="password">Password</label>
+              <div class="pw-wrap">
+                <input id="password" type="password" autocomplete="new-password" required>
+                <button class="pw-toggle" type="button" id="pwToggle" aria-label="Show password">Show</button>
+              </div>
+              <div class="meter" id="meter" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+              <div class="meter-label" id="meterLabel">Enter a password</div>
+              <div class="err" id="passwordErr"></div>
+            </div>
+            <div class="field">
+              <label for="confirm">Confirm password</label>
+              <input id="confirm" type="password" autocomplete="new-password" required>
+              <div class="err" id="confirmErr"></div>
+            </div>
+            <div class="field full">
+              <ul class="rules" id="rules">
+                <li data-rule="len">At least 8 characters</li>
+                <li data-rule="upper">One uppercase letter</li>
+                <li data-rule="lower">One lowercase letter</li>
+                <li data-rule="digit">One number</li>
+                <li data-rule="symbol">One symbol</li>
+                <li data-rule="noname">Does not contain your name or email</li>
+              </ul>
+            </div>
+          </div>
+        </fieldset>
+
+        <hr class="sep">
+
+        <fieldset>
+          <legend>Declarations</legend>
+          <div class="checks">
+            <label class="check">
+              <input type="checkbox" id="agreeTerms">
+              <span>I have read and accept the platform acceptable use policy and the
+                    Greenpower SL information security policy.</span>
+            </label>
+            <label class="check">
+              <input type="checkbox" id="agreeData">
+              <span>I consent to processing of my personal data for access management
+                    and audit purposes, and understand that all activity in the platform is logged.</span>
+            </label>
+            <label class="check">
+              <input type="checkbox" id="agreeAuthority">
+              <span>I confirm the role and limit requested are consistent with my written
+                    mandate, and that I will disclose any conflict of interest affecting an
+                    approval I am asked to give.</span>
+            </label>
+          </div>
+          <div class="err" id="agreeErr"></div>
+        </fieldset>
+
+        <button class="primary" type="submit" id="submitBtn" style="margin-top:22px">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="btn-label">Submit access request</span>
+        </button>
+      </form>
+
+      <p class="foot">Already have an account? <a class="link" href="login.html">Sign in</a></p>
+
+      <p class="legal">
+        Submitting this form does not grant access. Greenpower SL Management (Private) Limited
+        reserves the right to decline or withdraw access at its discretion. Personal data is
+        handled in accordance with the group data protection policy and applicable Sri Lankan law.
+      </p>
+    </section>
+
+    <!-- ============ Confirmation ============ -->
+    <section class="card" id="stepDone" hidden>
+      <div class="done">
+        <div class="tick" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0b5d3b"
+               stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6L9 17l-5-5"/>
+          </svg>
+        </div>
+        <h2>Request submitted</h2>
+        <p class="sub" id="doneSub"></p>
+        <div class="ref" id="doneRef"></div>
+        <dl class="summary" id="doneSummary"></dl>
+        <p class="foot" style="margin-top:26px">
+          <a class="link" href="login.html">Return to sign in</a>
+        </p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+/* =========================================================================
+   CONFIG
+   ========================================================================= */
+const CONFIG = {
+  API_BASE: '/api/v1',
+  DEMO: false,                      // [API] set false once the backend is live
+  ALLOWED_DOMAINS: ['greenpower-sl.com', 'gpslm.lk'],
+  MIN_PASSWORD_LENGTH: 8
+};
+
+/* =========================================================================
+   API LAYER  [API]
+   ========================================================================= */
+const Accounts = {
+
+  /* POST {API_BASE}/accounts/requests
+     body : {
+       firstName, lastName, email, phone, jobTitle, lineManagerEmail,
+       entity, role, limitLKR, provinces[], reason, password,
+       consents:{ terms, data, authority }
+     }
+     201  : { requestId, status:'pending_email_verification' }
+     409  : { code:'EMAIL_EXISTS' }
+     422  : { code:'VALIDATION_FAILED', fields:{ field:message } }
+
+     Server side must, at minimum:
+       - re-run every validation performed here, client checks are advisory only
+       - hash the password with Argon2id or bcrypt cost >= 12, never store plain
+       - reject a requested limit above the value held in the delegation of
+         authority matrix for that entity, rather than trusting this form
+       - email the line manager and the platform administrators
+       - write an immutable audit entry for the request                      */
+  async submit(payload) {
+    if (CONFIG.DEMO) {
+      await wait(950);
+      if (payload.email.toLowerCase() === 'taken@greenpower-sl.com') {
+        throw apiError(409, 'EMAIL_EXISTS',
+          'An account already exists for this address. Sign in or reset your password.');
+      }
+      return { requestId: 'AR-2026-' + String(Math.floor(1000 + Math.random() * 8999)),
+               status: 'pending_email_verification' };
+    }
+    return request('POST', '/accounts/requests', payload);
+  }
+};
+
+async function request(method, path, body) {
+  const res = await fetch(CONFIG.API_BASE + path, {
+    method,
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    credentials: 'include',
+    body: body ? JSON.stringify(body) : undefined
+  });
+  let payload = null;
+  try { payload = await res.json(); } catch (e) {}
+  if (!res.ok) {
+    throw apiError(res.status, (payload && payload.code) || 'REQUEST_FAILED',
+      (payload && payload.message) || 'The service is unavailable. Try again shortly.',
+      payload && payload.fields);
+  }
+  return payload;
+}
+function apiError(status, code, message, fields) {
+  const e = new Error(message); e.status = status; e.code = code; e.fields = fields || null; return e;
+}
+const wait = ms => new Promise(r => setTimeout(r, ms));
+
+/* =========================================================================
+   HELPERS
+   ========================================================================= */
+const $ = id => document.getElementById(id);
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const PHONE_RE = /^\+?[\d\s()-]{9,18}$/;
+
+function setError(id, msg) {
+  const input = $(id), err = $(id + 'Err');
+  if (!err) return;
+  if (msg) { if (input) input.setAttribute('aria-invalid', 'true'); err.textContent = msg; err.classList.add('show'); }
+  else { if (input) input.removeAttribute('aria-invalid'); err.textContent = ''; err.classList.remove('show'); }
+}
+function showBanner(kind, msg) {
+  const b = $('formBanner'); b.className = 'banner ' + kind + ' show'; b.textContent = msg;
+  b.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+function hideBanner() { $('formBanner').className = 'banner'; }
+function setBusy(btn, busy, label) {
+  btn.disabled = busy; btn.classList.toggle('busy', busy);
+  if (label) btn.querySelector('.btn-label').textContent = label;
+}
+const fmtLKR = n => 'LKR ' + Number(n).toLocaleString('en-GB');
+
+/* =========================================================================
+   CONDITIONAL FIELDS
+   ========================================================================= */
+$('role').addEventListener('change', () => {
+  const needsLimit = ['approver', 'finance'].includes($('role').value);
+  $('limitField').hidden = !needsLimit;
+  if (!needsLimit) { $('limit').value = ''; setError('limit', null); }
+});
+
+$('reason').addEventListener('input', () => {
+  $('reasonCount').textContent = $('reason').value.length;
+});
+
+$('pwToggle').addEventListener('click', () => {
+  const pw = $('password'), btn = $('pwToggle');
+  const show = pw.type === 'password';
+  pw.type = show ? 'text' : 'password';
+  btn.textContent = show ? 'Hide' : 'Show';
+  btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+});
+
+/* "All provinces" is mutually exclusive with the individual provinces */
+$('provinceSet').addEventListener('change', ev => {
+  const boxes = Array.from(document.querySelectorAll('input[name=province]'));
+  const all = boxes.find(b => b.value === 'All');
+  if (ev.target === all && all.checked) boxes.forEach(b => { if (b !== all) b.checked = false; });
+  else if (ev.target !== all && ev.target.checked) all.checked = false;
+  setError('province', null);
+});
+
+/* =========================================================================
+   PASSWORD POLICY
+   ========================================================================= */
+function passwordChecks() {
+  const pw = $('password').value;
+  const identity = [$('firstName').value, $('lastName').value,
+                    ($('email').value.split('@')[0] || '')]
+                   .filter(s => s && s.length > 2).map(s => s.toLowerCase());
+  const lower = pw.toLowerCase();
+  return {
+    len: pw.length >= CONFIG.MIN_PASSWORD_LENGTH,
+    upper: /[A-Z]/.test(pw),
+    lower: /[a-z]/.test(pw),
+    digit: /\d/.test(pw),
+    symbol: /[^A-Za-z0-9]/.test(pw),
+    noname: pw.length > 0 && !identity.some(s => lower.includes(s))
+  };
+}
+function renderPasswordState() {
+  const c = passwordChecks();
+  Object.keys(c).forEach(k => {
+    const li = document.querySelector('#rules li[data-rule="' + k + '"]');
+    if (li) li.classList.toggle('ok', c[k]);
+  });
+  const passed = Object.values(c).filter(Boolean).length;
+  /* A password that fails the length rule is never better than weak, however
+     many character classes it happens to contain. */
+  const score = $('password').value.length === 0 ? 0
+              : (!c.len ? 1 : Math.max(1, Math.ceil(passed / 1.5)));
+  $('meter').className = 'meter' + (score ? ' s' + Math.min(score, 4) : '');
+  $('meterLabel').textContent = ['Enter a password', 'Weak', 'Fair', 'Good', 'Strong'][Math.min(score, 4)];
+  return Object.values(c).every(Boolean);
+}
+['password', 'firstName', 'lastName', 'email'].forEach(id =>
+  $(id).addEventListener('input', renderPasswordState));
+
+/* =========================================================================
+   VALIDATE AND SUBMIT
+   ========================================================================= */
+function validate() {
+  let ok = true;
+  const fail = (id, msg) => { setError(id, msg); ok = false; };
+
+  [['firstName', 'Enter your first name.'], ['lastName', 'Enter your last name.'],
+   ['jobTitle', 'Enter your job title.']].forEach(([id, msg]) => {
+    $(id).value.trim() ? setError(id, null) : fail(id, msg);
+  });
+
+  const email = $('email').value.trim().toLowerCase();
+  if (!EMAIL_RE.test(email)) fail('email', 'Enter a valid email address.');
+  else if (!CONFIG.ALLOWED_DOMAINS.some(d => email.endsWith('@' + d))
+           && $('entity').value !== 'External adviser or contractor') {
+    fail('email', 'Use your Greenpower SL or GPSLM address, or select the external adviser entity.');
+  } else setError('email', null);
+
+  PHONE_RE.test($('phone').value.trim())
+    ? setError('phone', null) : fail('phone', 'Enter a valid mobile number.');
+
+  const lm = $('lineManager').value.trim().toLowerCase();
+  if (!EMAIL_RE.test(lm)) fail('lineManager', "Enter your line manager's email address.");
+  else if (lm === email) fail('lineManager', 'Your line manager cannot be yourself.');
+  else setError('lineManager', null);
+
+  $('entity').value ? setError('entity', null) : fail('entity', 'Select your primary entity.');
+  $('role').value ? setError('role', null) : fail('role', 'Select the role you need.');
+
+  if (!$('limitField').hidden) {
+    $('limit').value ? setError('limit', null)
+                     : fail('limit', 'Select your delegated authority limit.');
+  }
+
+  const provinces = Array.from(document.querySelectorAll('input[name=province]:checked')).map(b => b.value);
+  provinces.length ? setError('province', null)
+                   : fail('province', 'Select at least one province.');
+
+  $('reason').value.trim().length >= 20
+    ? setError('reason', null)
+    : fail('reason', 'Describe your reason for access in at least 20 characters.');
+
+  if (!renderPasswordState()) fail('password', 'Your password does not meet all of the rules below.');
+  else setError('password', null);
+
+  if ($('confirm').value !== $('password').value || !$('confirm').value)
+    fail('confirm', 'The two passwords do not match.');
+  else setError('confirm', null);
+
+  const consents = ['agreeTerms', 'agreeData', 'agreeAuthority'].every(id => $(id).checked);
+  consents ? setError('agree', null) : fail('agree', 'All three declarations must be accepted.');
+
+  return { ok, provinces };
+}
+
+$('signupForm').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  hideBanner();
+  const v = validate();
+  if (!v.ok) {
+    showBanner('error', 'Some fields need attention. The problems are marked below.');
+    const firstBad = document.querySelector('[aria-invalid=true], .err.show');
+    if (firstBad) firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  const payload = {
+    firstName: $('firstName').value.trim(),
+    lastName: $('lastName').value.trim(),
+    email: $('email').value.trim().toLowerCase(),
+    phone: $('phone').value.trim(),
+    jobTitle: $('jobTitle').value.trim(),
+    lineManagerEmail: $('lineManager').value.trim().toLowerCase(),
+    entity: $('entity').value,
+    role: $('role').value,
+    limitLKR: $('limit').value || null,
+    provinces: v.provinces,
+    reason: $('reason').value.trim(),
+    password: $('password').value,          // [API] TLS only, never logged
+    consents: { terms: true, data: true, authority: true }
+  };
+
+  const btn = $('submitBtn');
+  setBusy(btn, true, 'Submitting');
+  try {
+    const res = await Accounts.submit(payload);
+    renderConfirmation(res, payload);
+  } catch (e) {
+    if (e.fields) Object.keys(e.fields).forEach(f => setError(f, e.fields[f]));
+    showBanner('error', e.message);
+  } finally {
+    setBusy(btn, false, 'Submit access request');
+  }
+});
+
+function renderConfirmation(res, payload) {
+  const roleLabel = $('role').selectedOptions[0].textContent;
+  const limitLabel = payload.limitLKR
+    ? (payload.limitLKR === 'board' ? 'Board referral, above LKR 75,000,000' : fmtLKR(payload.limitLKR))
+    : 'Not applicable';
+
+  $('doneSub').textContent =
+    'A verification link has been sent to ' + payload.email +
+    '. Once verified, a platform administrator will confirm your delegated authority ' +
+    'before the account is activated. Your line manager has been copied.';
+  $('doneRef').textContent = 'Reference ' + res.requestId;
+  $('doneSummary').innerHTML = [
+    ['Name', payload.firstName + ' ' + payload.lastName],
+    ['Entity', payload.entity],
+    ['Role requested', roleLabel],
+    ['Authority limit', limitLabel],
+    ['Provinces', payload.provinces.join(', ')],
+    ['Status', 'Pending email verification']
+  ].map(([k, val]) =>
+    '<div><dt>' + k + '</dt><dd>' + String(val).replace(/[<>&]/g, c =>
+      ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c])) + '</dd></div>'
+  ).join('');
+
+  $('stepForm').hidden = true;
+  $('stepDone').hidden = false;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+renderPasswordState();
+</script>
+</body>
+</html>
