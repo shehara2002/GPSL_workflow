@@ -987,7 +987,7 @@
             API_BASE: '/api',
             DEMO: false,                 // Connected to live backend
             LOGIN_URL: '/signin',
-            MODULE_URL: '#',            // target page for every tile
+            MODULE_URL: '/module',            // target page for every tile
             SLA_DAYS: 5
         };
 
@@ -1358,7 +1358,8 @@
                 '<div class="tile-foot">' +
                 (allowed
                     ? '<span>' + esc(relative(s.lastActivity)) + '</span>' +
-                    '<span class="go">Open module <svg viewBox="0 0 24 24"><path d="M5 12h14"/>' +
+                    '<span class="go" onclick="window.location.href=\'/module?view=mine\'">' +
+                    'Open module <svg viewBox="0 0 24 24"><path d="M5 12h14"/>' +
                     '<path d="M13 6l6 6-6 6"/></svg></span>'
                     : '<span class="lockmsg"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" ' +
                     'stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" ' +

@@ -2363,8 +2363,7 @@
       if (!State.user) return false;
       const step = r.chain[r.stageIndex];
       if (!step || step.state !== 'current') return false;
-      return step.stage === (State.user.title || '') ||
-        step.stage === 'Head of operations';
+      return step.stage === (State.user.title || '');
     }
 
     /* =========================================================================

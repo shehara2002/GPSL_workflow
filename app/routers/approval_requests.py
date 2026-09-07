@@ -268,6 +268,21 @@ def list_requests(
     total = query.count()
     rows = query.all()
 
+    # Apply sequential workflow filtering for 'queue' view
+    if view == "queue":
+        filtered_rows = []
+        for r in rows:
+            if r.status in CLOSED_STATUSES:
+                continue
+            stage_idx = r.stage_index
+            chain = r.chain or []
+            if stage_idx < len(chain):
+                step = chain[stage_idx]
+                if step.get("state") == "current" and step.get("stage") == current_user.job_title:
+                    filtered_rows.append(r)
+        rows = filtered_rows
+        total = len(rows)
+
     items = [_row_to_response(r) for r in rows]
     return {"items": items, "total": total}
 
@@ -435,6 +450,9 @@ def decide(
         raise HTTPException(status_code=409, detail="No current stage to decide on.")
 
     step = dict(chain[stage_index])
+
+    if step.get("stage") != current_user.job_title:
+        raise HTTPException(status_code=403, detail="You are not the approver for this stage.")
     label_map = {
         "approve": "Approved",
         "reject":  "Rejected",
