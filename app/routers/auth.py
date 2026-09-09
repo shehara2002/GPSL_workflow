@@ -59,7 +59,7 @@ def get_current_user(
 
 
 @router.post("/api/auth/signup", response_model=SignupResponse, status_code=status.HTTP_201_CREATED)
-@router.post("/api/v1/accounts/requests", response_model=SignupResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/api/accounts/requests", response_model=SignupResponse, status_code=status.HTTP_201_CREATED)
 def signup_user(
     user_data: UserCreate,
     response: Response,
@@ -130,7 +130,6 @@ def signup_user(
 
 
 @router.post("/api/auth/login", response_model=LoginResponse)
-@router.post("/api/v1/auth/login", response_model=LoginResponse)
 def signin_user(
     login_data: LoginRequest,
     response: Response,
@@ -184,7 +183,6 @@ def get_current_user_profile(
     return UserResponse.model_validate(current_user)
 
 
-@router.post("/api/v1/auth/logout")
 @router.post("/api/auth/logout")
 def logout_user(response: Response):
     """Log out current user and clear session cookie."""
@@ -196,7 +194,7 @@ def logout_user(response: Response):
     return {"success": True, "message": "Logged out successfully", "redirectUrl": "/signin"}
 
 
-@router.post("/api/v1/auth/mfa/verify")
+@router.post("/api/auth/mfa/verify")
 def mfa_verify_mock(request: Request, response: Response, db: Session = Depends(get_db)):
     """MFA verification endpoint."""
     user = db.query(User).first()
@@ -213,7 +211,6 @@ def mfa_verify_mock(request: Request, response: Response, db: Session = Depends(
     return {"user": UserResponse.model_validate(user), "redirectUrl": "/home"}
 
 
-@router.post("/api/v1/auth/password/reset-request")
 @router.post("/api/auth/password/reset-request")
 def password_reset_request(payload: dict, db: Session = Depends(get_db)):
     """
@@ -260,7 +257,6 @@ def password_reset_request(payload: dict, db: Session = Depends(get_db)):
     return generic_response
 
 
-@router.post("/api/v1/auth/password/reset-confirm")
 @router.post("/api/auth/password/reset-confirm")
 def password_reset_confirm(payload: dict, db: Session = Depends(get_db)):
     """

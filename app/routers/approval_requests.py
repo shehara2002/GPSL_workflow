@@ -39,7 +39,7 @@ from app.schemas.approval_request import (
 UPLOADS_DIR = Path(__file__).resolve().parent.parent / "static" / "uploads"
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
-router = APIRouter(prefix="/api/v1", tags=["Approval Requests"])
+router = APIRouter(prefix="/api", tags=["Approval Requests"])
 
 # ---------------------------------------------------------------------------
 # Constants (mirror of module.html CONFIG / ROUTE_RULES / FX_TO_LKR)
@@ -134,7 +134,7 @@ def _next_ref(db: Session) -> str:
 
 
 # ---------------------------------------------------------------------------
-# POST /api/v1/documents/upload
+# POST /api/documents/upload
 # ---------------------------------------------------------------------------
 
 @router.post("/documents/upload")
@@ -180,7 +180,7 @@ async def upload_document(
 
 
 # ---------------------------------------------------------------------------
-# GET /api/v1/me
+# GET /api/me
 # ---------------------------------------------------------------------------
 
 @router.get("/me", response_model=MeResponse)
@@ -203,7 +203,7 @@ def get_me(current_user: User = Depends(get_current_user)):
 
 
 # ---------------------------------------------------------------------------
-# GET /api/v1/approval-requests
+# GET /api/approval-requests
 # ---------------------------------------------------------------------------
 
 @router.get("/approval-requests", response_model=ApprovalRequestListResponse)
@@ -288,7 +288,7 @@ def list_requests(
 
 
 # ---------------------------------------------------------------------------
-# POST /api/v1/approval-requests
+# POST /api/approval-requests
 # ---------------------------------------------------------------------------
 
 @router.post("/approval-requests", status_code=status.HTTP_201_CREATED)
@@ -371,7 +371,7 @@ def create_request(
 
 
 # ---------------------------------------------------------------------------
-# GET /api/v1/approval-requests/{id}
+# GET /api/approval-requests/{id}
 # ---------------------------------------------------------------------------
 
 @router.get("/approval-requests/{request_id}")
@@ -394,7 +394,7 @@ def get_request(
 
 
 # ---------------------------------------------------------------------------
-# POST /api/v1/approval-requests/{id}/decisions
+# POST /api/approval-requests/{id}/decisions
 # ---------------------------------------------------------------------------
 
 @router.post("/approval-requests/{request_id}/decisions")

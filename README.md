@@ -155,7 +155,7 @@ Once the server is running, access the web pages in your browser:
 ### 🔐 Authentication (`/api/auth`)
 
 #### 1. Sign Up / Register
-- **Endpoint**: `POST /api/auth/signup` (Alias: `POST /api/v1/accounts/requests`)
+- **Endpoint**: `POST /api/auth/signup`
 - **Payload**:
   ```json
   {
@@ -184,7 +184,7 @@ Once the server is running, access the web pages in your browser:
   ```
 
 #### 2. Sign In
-- **Endpoint**: `POST /api/auth/login` (Alias: `POST /api/v1/auth/login`)
+- **Endpoint**: `POST /api/auth/login`
 - **Payload**:
   ```json
   {
