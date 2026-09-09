@@ -41,7 +41,7 @@ body{font-family:var(--font);color:var(--gp-slate-900);background:var(--gp-slate
   border-radius:50%;border:1px solid rgba(255,255,255,.09)}
 .logo{display:flex;align-items:center;gap:13px;position:relative;z-index:1}
 .logo-mark{width:40px;height:40px;border-radius:9px;background:var(--gp-white);
-  display:grid;place-items:center;flex:0 0 40px}
+  display:grid;place-items:center;flex:0 0 40px;overflow:hidden}
 .logo-mark svg{width:25px;height:25px}
 .logo-text strong{display:block;font-size:15.5px;letter-spacing:.2px}
 .logo-text span{display:block;font-size:11px;color:rgba(255,255,255,.72);
@@ -157,12 +157,7 @@ a.link:hover{text-decoration:underline}
   <aside class="brand">
     <div class="logo">
       <div class="logo-mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#0b5d3b" stroke-width="1.9"
-             stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 3v3"/><path d="M4.6 6.6l2.1 2.1"/><path d="M19.4 6.6l-2.1 2.1"/>
-          <circle cx="12" cy="12.5" r="3.2"/><path d="M3 20h18"/>
-          <path d="M6.5 20l2-4.2"/><path d="M17.5 20l-2-4.2"/>
-        </svg>
+        <img src="static/greenpower_sl_logo.png" alt="" style="width:100%;height:100%;object-fit:contain;">
       </div>
       <div class="logo-text">
         <strong>Greenpower SL</strong>

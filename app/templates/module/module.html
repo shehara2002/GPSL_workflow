@@ -2068,7 +2068,7 @@
 
       /* POST {API_BASE}/auth/logout  ->  clears the session cookie */
       async signOut() {
-        if (!CONFIG.DEMO) { try { await req('POST', '/api/v1/auth/logout'); } catch (e) { } }
+        if (!CONFIG.DEMO) { try { await req('POST', '/auth/logout'); } catch (e) { } }
         window.location.assign(CONFIG.LOGIN_URL);
       }
     };
@@ -2641,8 +2641,9 @@
         const updated = await Api.decide(State.selectedId, act, comment);
         const label = { approve: 'approved', reject: 'rejected', return: 'returned for information' }[act];
         toast(updated.ref + ' ' + label + '.', 'ok');
-        render();
-        openDrawer(State.selectedId);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
       } catch (e) {
         toast(e.message, 'bad');
         all.forEach(b => b.disabled = false);
@@ -2781,12 +2782,9 @@
         const rec = await Api.createRequest(payload);
         closeModal();
         toast(rec.ref + ' submitted. Routed to ' + rec.chain[0].stage + '.', 'ok');
-        State.view = 'mine';
-        document.querySelectorAll('.nav-item').forEach(b =>
-          b.classList.toggle('active', b.dataset.view === 'mine'));
-        State.page = 1;
-        render();
-        openDrawer(rec.id);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
       } catch (e) {
         if (e.fields) Object.keys(e.fields).forEach(f => setFieldError('n' + f[0].toUpperCase() + f.slice(1), e.fields[f]));
         toast(e.message, 'bad');

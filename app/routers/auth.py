@@ -184,6 +184,7 @@ def get_current_user_profile(
     return UserResponse.model_validate(current_user)
 
 
+@router.post("/api/v1/auth/logout")
 @router.post("/api/auth/logout")
 def logout_user(response: Response):
     """Log out current user and clear session cookie."""
